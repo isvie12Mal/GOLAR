@@ -6,10 +6,10 @@ let renderer,scene,camera,ball,keeper,keeperParts={},goal,aimPosition=new THREE.
 const clock=new THREE.Clock();
 const stadium=document.querySelector('#scene');
 const scene3=new THREE.Scene(); scene=scene3;scene.background=new THREE.Color(0x0c2638);scene.fog=new THREE.FogExp2(0x0c2638,.008);
-camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,300);camera.position.set(0,4.8,22);camera.lookAt(0,2.7,-6);
+camera=new THREE.PerspectiveCamera(50,innerWidth/innerHeight,.1,300);camera.position.set(0,4.1,18.5);camera.lookAt(0,2.4,-8);
 renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.35;stadium.appendChild(renderer.domElement);
 scene.add(new THREE.HemisphereLight(0x99ccff,0x233c20,2.1));const sun=new THREE.DirectionalLight(0xf6f8ed,3);sun.position.set(-17,32,9);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-32,right:32,top:35,bottom:-35});scene.add(sun);
-const mat=(color,roughness=.8,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});const white=mat(0xe6f4ee),grass=[mat(0x21683d),mat(0x277848)],dark=mat(0x102936),stand=mat(0x293c50),gold=mat(0xc9f547),glove=mat(0xecf3ff),keeperMat=mat(0xff7844),skin=mat(0xe7b08b),black=mat(0x121a24);
+const mat=(color,roughness=.8,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});const white=mat(0xe6f4ee),grass=[mat(0x21683d),mat(0x277848)],dark=mat(0x102936),stand=mat(0x293c50),gold=mat(0xc9f547),glove=mat(0xecf3ff),keeperMat=mat(0xffa12a),skin=mat(0xe7b08b),black=mat(0x121a24);
 function box(w,h,d,m,x,y,z,parent=scene){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.receiveShadow=true;o.castShadow=true;parent.add(o);return o}
 for(let i=0;i<20;i++)box(70,.03,2.1,grass[i%2],0,-.03,-20+i*2.1);
 function line(points){const geometry=new THREE.BufferGeometry().setFromPoints(points.map(p=>new THREE.Vector3(...p)));const m=new THREE.LineBasicMaterial({color:0xedf4e9,transparent:true,opacity:.88});scene.add(new THREE.Line(geometry,m));}
@@ -23,12 +23,12 @@ for(let y=0;y<=5.201;y+=.5)netLine([-5,y,GZ-.15],[5,y,GZ-.15]);for(let z=GZ-.1;z
 for(let y=0;y<=5.201;y+=.5){netLine([-5,y,GZ],[ -5,y,GZ-2.3]);netLine([5,y,GZ],[5,y,GZ-2.3])}
 // Stadium tiers, illuminated advertising, procedural crowd.
 for(let side of [-1,1]){for(let tier=0;tier<9;tier++){const height=1.4+tier*.52;box(55,.4,1.5,stand,side*(24+tier*.52),height,-7);for(let z=-33;z<21;z+=1.5){if((Math.floor(z*7+tier*11)%5)!==0){const colors=[0xa4bbd5,0xf9df90,0x438a9d,0xd1e5e1,0x4aa26f];box(.18,.28,.16,mat(colors[(tier+Math.floor(z+40))%colors.length]),side*(23.5+tier*.52),height+.28,z)}}}}
-for(let tier=0;tier<8;tier++){box(65,.5,1.6,stand,0,1.8+tier*.63,-24-tier*.85)}
-for(let i=0;i<320;i++){const x=(Math.random()-.5)*62,y=2+Math.random()*4.8,z=-25-Math.random()*6;const colors=[0xdce6de,0x9be071,0x4ea8bb,0xf1d181];box(.16,.2,.13,mat(colors[i%4]),x,y,z)}
+for(let tier=0;tier<5;tier++){box(65,.3,1.6,stand,0,1.2+tier*.47,-38-tier*.85)}
+for(let i=0;i<320;i++){const x=(Math.random()-.5)*62,y=2+Math.random()*4.8,z=-39-Math.random()*6;const colors=[0xdce6de,0x9be071,0x4ea8bb,0xf1d181];box(.16,.2,.13,mat(colors[i%4]),x,y,z)}
 for(let x of [-27,27]){const pole=box(.32,24,.32,mat(0x737d87),x,12,-17);box(8,.5,.8,mat(0xe8ffff,.3),x,24,-17);const flood=new THREE.SpotLight(0xd3eaff,330,120,Math.PI/3,.65);flood.position.set(x,24,-16);flood.target.position.set(0,0,-5);scene.add(flood,flood.target)}
 for(let i=0;i<8;i++){const x=-19+i*5.5;box(5,1,.18,mat(i%2?0x0c3d50:0x67a72a),x,.72,-19)}
 function capsuleBetween(a,b,r,material,parent){const av=new THREE.Vector3(...a),bv=new THREE.Vector3(...b);let delta=bv.clone().sub(av);const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r,r,delta.length(),10),material);mesh.position.copy(av.add(bv).multiplyScalar(.5));mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),delta.normalize());mesh.castShadow=true;parent.add(mesh);return mesh}
-keeper=new THREE.Group();keeper.position.set(0,0,GZ+3.1);keeper.scale.setScalar(1.42);scene.add(keeper);
+keeper=new THREE.Group();keeper.position.set(0,0,GZ+6.1);keeper.scale.setScalar(1.35);scene.add(keeper);
 const chest=box(1.04,1.32,.53,keeperMat,0,2.2,0,keeper);const shorts=box(.97,.5,.53,black,0,1.31,0,keeper);const head=new THREE.Mesh(new THREE.SphereGeometry(.39,24,18),skin);head.position.set(0,3.30,.12);head.castShadow=true;keeper.add(head);
 // Face looks toward the player (+Z), with eyes, pupils, eyebrows, ears and nose.
 const eyeWhite=mat(0xffffff), pupil=mat(0x142938),hair=mat(0x141923),mouth=mat(0x873d39),gloveBright=mat(0xd6fc4b);
@@ -65,25 +65,27 @@ function publishScore(row){if(!GAS_URL){setHint('Leaderboard LOCAL. Sambung Apps
 let startTime=0;
 function finish(){state.playing=false;$('kickButton').disabled=true;const secs=Math.round((performance.now()-startTime)/1000);const row={name:state.name,klass:state.klass,goals:state.goals,shots:5,seconds:secs,level:state.difficulty,created:new Date().toISOString()};saveLocal(row);publishScore(row);$('message').textContent=`FULL TIME • ${state.goals}/5 GOALS`;flash(`FINAL ${state.goals} / 5`);setTimeout(()=>{$('overlay').classList.remove('hidden');$('startAR').textContent='📷 PLAY AGAIN WITH AR';$('startTouch').textContent='🎮 PLAY AGAIN TOUCH';},1300)}
 async function begin(mode){const name=$('playerName').value.trim(),klass=$('playerClass').value.trim();if(!name||!klass){alert('Isi nama dan kelas dahulu.');return}state.name=name;state.klass=klass;state.difficulty=$('difficulty').value;state.goals=0;state.shots=0;state.playing=true;state.busy=false;$('overlay').classList.add('hidden');$('goals').textContent='0';$('attempts').textContent='5';$('roundLabel').textContent='1 / 5';$('playerLabel').textContent=name.toUpperCase();$('message').textContent='AIM & KICK!';$('kickButton').disabled=false;startTime=performance.now();aimAt(0);state.mode=mode;if(mode==='ar'){try{await activateCamera();setStatus('FOOT AR ACTIVE','#a7ff5b')}catch(e){state.mode='touch';setStatus('AR UNAVAILABLE','#ffb68c');setHint('AR gagal: '+e.message+' — gunakan TOUCH / keyboard.')}}else{setStatus('TOUCH ACTIVE','#b9e98a');setHint('Klik kawasan gol untuk sasarkan; tekan KICK untuk sepak.')}}
-// MediaPipe modules and WASM may be unavailable on some school networks.
-// Prefer the official ESM bundle rather than jsDelivr's on-the-fly +esm transformer.
-const MEDIA_PIPE_SOURCES = [
-  {module:'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/vision_bundle.mjs',wasm:'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm'},
-  {module:'https://unpkg.com/@mediapipe/tasks-vision@0.10.22/vision_bundle.mjs',wasm:'https://unpkg.com/@mediapipe/tasks-vision@0.10.22/wasm'}
-];
+// V1.4: MediaPipe is served from THIS Vercel deployment, not jsDelivr/unpkg.
+// npm run build copies the installed MediaPipe module, WASM and (when possible) the pose model.
 async function loadPose(){
-  const errors=[];
-  for(const source of MEDIA_PIPE_SOURCES){
-    try{
-      setHint('Memuatkan MediaPipe melalui '+new URL(source.module).hostname+' ...');
-      const mp=await import(/* @vite-ignore */ source.module);
-      const vision=await mp.FilesetResolver.forVisionTasks(source.wasm);
-      const options={baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task',delegate:'GPU'},runningMode:'VIDEO',numPoses:1,minPoseDetectionConfidence:.5,minPosePresenceConfidence:.5,minTrackingConfidence:.5};
-      try{return await mp.PoseLandmarker.createFromOptions(vision,options)}
-      catch(gpuErr){setHint('GPU tidak tersedia, mencuba CPU ...');return await mp.PoseLandmarker.createFromOptions(vision,{...options,baseOptions:{...options.baseOptions,delegate:'CPU'}})}
-    }catch(error){errors.push(new URL(source.module).hostname+': '+(error?.message||String(error)))}
+  setHint('Memuatkan pengesan kaki dari Vercel sendiri ...');
+  let mp;
+  try { mp=await import('./vendor/vision_bundle.mjs'); }
+  catch(e){throw new Error('Modul AR tempatan tiada. Pastikan Vercel menjalankan npm run build (Output: dist). '+e.message)}
+  let vision;
+  try {vision=await mp.FilesetResolver.forVisionTasks(new URL('./vendor/wasm/',import.meta.url).href)}
+  catch(e){throw new Error('WASM gagal dimuat: '+e.message)}
+  const remoteModel='https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task';
+  let modelPath='./vendor/pose_landmarker_lite.task';
+  try{const r=await fetch(modelPath,{method:'HEAD'});if(!r.ok)modelPath=remoteModel}
+  catch{modelPath=remoteModel}
+  const opts={baseOptions:{modelAssetPath:modelPath,delegate:'GPU'},runningMode:'VIDEO',numPoses:1,minPoseDetectionConfidence:.5,minPosePresenceConfidence:.5,minTrackingConfidence:.5};
+  try {return await mp.PoseLandmarker.createFromOptions(vision,opts)}
+  catch(err){
+    setHint('GPU tidak tersedia, mencuba CPU ...');
+    try{return await mp.PoseLandmarker.createFromOptions(vision,{...opts,baseOptions:{...opts.baseOptions,delegate:'CPU'}})}
+    catch(err2){throw new Error('Model pose gagal: '+err2.message+' (GPU: '+err.message+')')}
   }
-  throw new Error('MediaPipe tidak dapat dimuatkan. Semak internet / sekatan CDN sekolah. '+errors.join(' | '));
 }
 async function activateCamera(){
   if(!navigator.mediaDevices?.getUserMedia)throw new Error('Kamera memerlukan HTTPS dan kebenaran browser');
