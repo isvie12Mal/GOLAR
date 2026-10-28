@@ -1,21 +1,23 @@
-# SKG Football AR Penalty V1.4 — Local MediaPipe + Keeper Fix
+# SKG Football AR Penalty V1.5 — semak deployment dahulu
 
-## Apa yang dibaiki
-- MediaPipe JavaScript dan WASM **dipasang semasa build Vercel** melalui npm dan dihidang dari domain game sendiri (`/vendor/`). Tiada import jsDelivr / unpkg untuk AR.
-- Skrip build cuba muat turun model pose `.task` ke `/vendor/` semasa deployment. Jika tidak berjaya, model masih memerlukan Google Storage pada masa bermain dan mesej ralat akan dipaparkan.
-- Kamera game didekatkan, penjaga gol berada lebih hampir dan stadium di belakang gawang dijauhkan supaya muka, badan dan sarung tangan lebih kelihatan.
-- `config.js` mengekalkan URL Google Apps Script lama.
+## Penting: Screenshot ralat CDN lama
+Jika skrin masih memaparkan `cdn.jsdelivr.net/npm/@mediapipe/tasks-vision` atau `unpkg.com`, itu bermakna kod lama masih dipaparkan. **V1.5 tidak mengimport MediaPipe daripada kedua-dua alamat tersebut.** Pastikan badge hijau `V1.5 • LOCAL AR BUILD` di sudut kanan atas.
 
-## KEMAS KINI GITHUB & VERCEL (PENTING)
-1. Extract ZIP. Buka repo GitHub lama (branch deploy, biasanya `main`). Upload **semua fail dan folder** daripada ZIP: `index.html`, `game.js`, `style.css`, `config.js`, `Code.gs`, `vercel.json`, `package.json`, `README.md`, dan folder `scripts/` dengan `build.mjs`. **Jangan upload ZIP sahaja**.
-2. Tekan `Commit changes`. Pastikan folder `scripts/build.mjs` ada di root repo.
-3. Vercel → Project → Settings → Build and Deployment: Framework Preset **Other**; Build Command `npm run build` (atau ikut `vercel.json`), Output Directory `dist`; Root Directory kosong jika fail ada di root.
-4. Vercel → Deployments → buka deployment terbaru; `npm install` harus memasang `@mediapipe/tasks-vision` dan log build patut menyebut `Built dist with MediaPipe JS + WASM`.
-5. Buka website HTTPS, hard refresh `Ctrl+Shift+R`, mulakan FOOT AR, beri akses kamera. Pastikan seluruh badan termasuk kedua-dua kaki terlihat dan lampu terang.
-6. Jika Vercel gagal build, ambil screenshot **build logs**. Jika AR masih gagal, buka browser Console (F12) dan ambil mesej ralat. Periksa `https://YOUR-APP.vercel.app/vendor/vision_bundle.mjs` boleh dibuka.
+## Upload GitHub
+1. Extract ZIP. Buka repo yang tersambung ke Vercel, pilih branch deployment (kebiasaannya `main`).
+2. Gantikan semua fail di ROOT repo (bukan dalam folder bersarang): `index.html`, `game.js`, `style.css`, `config.js`, `Code.gs`, `package.json`, `vercel.json`, `README.md`, dan `scripts/build.mjs`.
+3. Commit changes. Semak commit hash pada Vercel > Deployments supaya sama dengan commit GitHub.
+4. Vercel > Settings > Build and Deployment: Framework `Other`, Install Command `npm install`, Build Command `npm run build`, Output Directory `dist`, Root Directory kosong (repo root).
+5. Redeploy dengan pilihan **without cache** jika tersedia. Selepas Ready, semak `https://alamat-game.vercel.app/` ada badge V1.5. Tekan Ctrl+Shift+R.
 
-## Penting
-- ZIP ini ialah **source project** yang memerlukan `npm install` dan `npm run build` di Vercel. Ia tidak mengandungi binari MediaPipe kerana dependency tersebut dipasang oleh Vercel. Penjanaan bundle tidak dapat diuji dalam persekitaran ini tanpa akses npm; semak Vercel build logs.
-- Three.js masih diimport melalui jsDelivr kerana stadium sudah berfungsi pada screenshot. Jika CDN Three.js turut disekat, ia perlu dilokalkan juga.
-- Ini AR melalui kamera inset: pose estimates 2D, bukan fizikal sebenar bola. Touch mode masih boleh digunakan.
-- Sheets dikendalikan oleh `Code.gs` sama seperti versi dahulu. Periksa helaian untuk pengesahan rekod; submit form silang domain tidak memberi acknowledgement yang boleh dipercayai.
+## Semak AR jika badge V1.5 sudah keluar
+- Semak `https://alamat-game.vercel.app/vendor/vision_bundle.mjs`, `/vendor/wasm/vision_wasm_internal.wasm` dan `/vendor/pose_landmarker_lite.task` (jika model berjaya didownload semasa build).
+- Jika ralat model, periksa log build. Projek cuba memuat turun model daripada Google semasa build, dan menggunakan URL Google hanya sebagai fallback.
+- Benarkan kamera HTTPS, jauhkan laptop/telefon supaya pinggang dan kedua-dua kaki kelihatan.
+- Touch Mode boleh digunakan sementara AR belum siap.
+
+## Penjaga gol
+Penjaga gol V1.5 telah didekatkan kepada gawang dan dibesarkan, manakala belakang stadium dialihkan lebih jauh.
+
+## Rekod Sheets
+`config.js` mengekalkan URL Apps Script yang dibekalkan. Penyimpanan perlu diuji pada Google Sheets sebenar; hantaran `form` tidak menjamin kejayaan.
