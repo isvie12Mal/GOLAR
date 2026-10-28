@@ -35,3 +35,17 @@
 
 ## V1.1 — URL leaderboard disambungkan
 `config.js` telah dimasukkan URL Web App pengguna. Jika Web App organisasi memerlukan akaun moe-dl.edu.my, akses leaderboard daripada pemain luar organisasi mungkin gagal. Uji simpan rekod dan leaderboard selepas deployment.
+
+## V1.2 — pembetulan gagal import MediaPipe
+- Import lama `@mediapipe/tasks-vision@0.10.22/+esm` diganti dengan pakej `vision_bundle.mjs`.
+- Cuba **jsDelivr**, kemudian **unpkg** jika gagal, termasuk fail WASM daripada hos yang sepadan.
+- Jika GPU gagal, cuba CPU; butang kamera menjadi `RETRY AR` jika gagal.
+- Jika kedua-dua CDN disekat (contohnya Wi-Fi sekolah), tukar rangkaian atau hoskan aset MediaPipe secara setempat. Versi ini masih memerlukan internet bagi model dan library Three.js.
+- Sambungan Apps Script dalam `config.js` dikekalkan.
+- Selepas deploy, buat hard refresh **Ctrl+Shift+R** agar kod baharu dimuatkan.
+
+
+### V1.3 — Keeper Visible
+- Keeper is moved forward, scaled 1.42x and gets visible eyes, eyebrows, nose, mouth, hair, ear, neon gloves, raised ready arms and chest badge.
+- Updated camera aim. Existing Google Apps Script URL remains in `config.js`.
+- To update GitHub: extract ZIP, visit the same repository, choose Add file > Upload files, drag the seven files (not the ZIP), then Commit changes to main. If Vercel is connected it redeploys automatically.
